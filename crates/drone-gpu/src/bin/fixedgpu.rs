@@ -22,7 +22,7 @@ fn main() {
     println!("CPU (native i64) final pos = ({:.4}, {:.4}, {:.4})", sc.final_pos[0], sc.final_pos[1], sc.final_pos[2]);
 
     // ---- GPU ----
-    let instance = wgpu::Instance::new(wgpu::InstanceDescriptor { backends: wgpu::Backends::VULKAN, ..Default::default() });
+    let instance = wgpu::Instance::new(wgpu::InstanceDescriptor { backends: wgpu::Backends::PRIMARY, ..Default::default() });
     let adapter = pollster::block_on(instance.request_adapter(&wgpu::RequestAdapterOptions {
         power_preference: wgpu::PowerPreference::None, force_fallback_adapter: false, compatible_surface: None,
     })).expect("no adapter");

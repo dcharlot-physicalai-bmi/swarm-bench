@@ -67,7 +67,7 @@ fn main() {
     let cfg = Cfg { count, p0: 0, p1: 0, p2: 0 };
 
     // ---- GPU ----
-    let instance = wgpu::Instance::new(wgpu::InstanceDescriptor { backends: wgpu::Backends::VULKAN, ..Default::default() });
+    let instance = wgpu::Instance::new(wgpu::InstanceDescriptor { backends: wgpu::Backends::PRIMARY, ..Default::default() });
     let adapter = pollster::block_on(instance.request_adapter(&wgpu::RequestAdapterOptions {
         power_preference: wgpu::PowerPreference::None, force_fallback_adapter: false, compatible_surface: None,
     })).expect("no adapter");

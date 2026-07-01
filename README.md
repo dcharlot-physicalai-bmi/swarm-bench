@@ -65,9 +65,20 @@ cargo run   -p drone-gpu --bin fixedgpu   # M4: prints the trajectory SHA-256
 
 > `drone-gpu` pins `wgpu = "0.19"` (verified on software Vulkan). On a current toolchain bump `wgpu` to the latest; the shader and the kernel logic are unchanged.
 
-## The one thing left to run on real hardware
+## Cross-device determinism — results
 
-Cross-vendor bit-exactness. This box had one adapter — run `fixedgpu` on an NVIDIA, an AMD, and Apple silicon; **all three printing `4c5ab55b…` closes the cross-device determinism claim.** Any mismatch localizes to a byte offset.
+The fixed-point path is meant to be bit-exact on *every* GPU. Confirmed so far, all producing the same digest:
+
+| Compute | Backend | Trajectory SHA-256 |
+|---|---|---|
+| CPU native `i64`/`i128` | — | `4c5ab55b…` ✅ |
+| GPU emulated-64-bit | software Vulkan (llvmpipe) | `4c5ab55b…` ✅ |
+| GPU emulated-64-bit | **Apple M5 Max (Metal)** | `4c5ab55b…` ✅ |
+| GPU emulated-64-bit | NVIDIA / AMD (Vulkan/DX12) | *pending — run `fixedgpu`* |
+
+Three independent computations — a native-integer CPU and an *emulated*-64-bit GPU kernel across **two different backends** — produce a byte-for-byte identical 1500-step trajectory. Running `fixedgpu` on NVIDIA and AMD is the remaining check; a matching digest closes cross-vendor exactness, and any mismatch localizes to a byte offset.
+
+> The GPU bins select `wgpu::Backends::PRIMARY`, so `fixedgpu` runs on Metal (macOS), Vulkan (Linux), or DX12 (Windows) — whatever the machine has.
 
 ## Context
 
