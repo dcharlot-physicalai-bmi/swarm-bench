@@ -1,0 +1,7 @@
+[package]
+name = "fixedstep"
+version = "0.1.0"
+edition = "2021"
+[[bin]]
+name = "fixedstep"
+path = "src/main.rs"

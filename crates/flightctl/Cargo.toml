@@ -1,0 +1,13 @@
+[package]
+name = "flightctl"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "flightctl"
+path = "src/lib.rs"
+crate-type = ["cdylib", "rlib"]   # cdylib -> control.wasm on a wasm target; rlib -> native sim
+
+[[bin]]
+name = "sim"
+path = "src/bin/sim.rs"

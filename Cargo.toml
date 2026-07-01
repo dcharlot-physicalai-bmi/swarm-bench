@@ -1,0 +1,12 @@
+[workspace]
+resolver = "2"
+members = [
+  "crates/drone-ref",
+  "crates/drone-gpu",
+  "crates/drone-verify",
+  "crates/fixedstep",
+  "crates/flightctl",
+]
+
+[profile.release]
+opt-level = 3

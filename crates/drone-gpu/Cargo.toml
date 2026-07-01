@@ -1,0 +1,25 @@
+[package]
+name = "drone-gpu"
+version = "0.1.0"
+edition = "2021"
+autobins = false
+
+[[bin]]
+name = "drone-gpu"     # M2 + M3: batched f32 quadrotor solver
+path = "src/main.rs"
+
+[[bin]]
+name = "fixedpt"       # M4 keystone: Q32.32 emulated-multiply verification
+path = "src/bin/fixedpt.rs"
+
+[[bin]]
+name = "fixedgpu"      # M4: full fixed-point step, GPU vs CPU bit-exact + SHA-256
+path = "src/bin/fixedgpu.rs"
+
+[dependencies]
+wgpu = "0.19"
+pollster = "0.3"
+bytemuck = { version = "1", features = ["derive"] }
+# Verified with wgpu 0.19 on rustc 1.75 (software Vulkan / llvmpipe). On a current
+# toolchain, bump wgpu to the latest. Only on pre-1.85 Cargo (no `edition2024`) do
+# you need to pin transitive deps: indexmap = "=2.7.1", zerocopy = "=0.8.14".

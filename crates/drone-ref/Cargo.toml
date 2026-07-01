@@ -1,0 +1,8 @@
+[package]
+name = "drone-ref"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "drone-ref"
+path = "src/main.rs"
