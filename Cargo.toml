@@ -1,5 +1,5 @@
 [workspace]
-resolver = "2"
+resolver = "3"
 members = [
   "crates/drone-ref",
   "crates/drone-gpu",
@@ -10,3 +10,7 @@ members = [
 
 [profile.release]
 opt-level = 3
+
+[workspace.package]
+edition = "2024"
+rust-version = "1.98"

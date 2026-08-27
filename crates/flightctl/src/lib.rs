@@ -62,7 +62,7 @@ fn qconj(q: [f32; 4]) -> [f32; 4] { [-q[0], -q[1], -q[2], q[3]] }
 /// state[17]    = [px,py,pz, vx,vy,vz, qx,qy,qz,qw, wx,wy,wz, r0,r1,r2,r3]
 /// setpoint[4]  = [x_des, y_des, z_des, yaw_des]   (yaw held by rate damping here)
 /// out[4]       = commanded rotor speeds [Ω0..Ω3]
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn control(state: *const f32, setpoint: *const f32, out: *mut f32) {
     let s = unsafe { core::slice::from_raw_parts(state, 17) };
     let sp = unsafe { core::slice::from_raw_parts(setpoint, 4) };

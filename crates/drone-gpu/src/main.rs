@@ -93,10 +93,10 @@ fn make_config(p: &P, dt: f64, n_env: u32, n_substeps: u32) -> GpuConfig {
 }
 
 // field-major builders (value of field f for env i at index f*n + i)
-fn build_state<F: Fn(usize) -> (f32, [f32; 4])>(n: usize, oh: f32, gen: &F) -> Vec<f32> {
+fn build_state<F: Fn(usize) -> (f32, [f32; 4])>(n: usize, oh: f32, r#gen: &F) -> Vec<f32> {
     let mut s = vec![0.0f32; 18 * n];
     for i in 0..n {
-        let (z, _c) = gen(i);
+        let (z, _c) = r#gen(i);
         s[2 * n + i] = z;         // pz
         s[9 * n + i] = 1.0;       // qw (identity)
         s[13 * n + i] = oh;       // rotor 0..3
@@ -106,10 +106,10 @@ fn build_state<F: Fn(usize) -> (f32, [f32; 4])>(n: usize, oh: f32, gen: &F) -> V
     }
     s
 }
-fn build_cmd<F: Fn(usize) -> (f32, [f32; 4])>(n: usize, gen: &F) -> Vec<f32> {
+fn build_cmd<F: Fn(usize) -> (f32, [f32; 4])>(n: usize, r#gen: &F) -> Vec<f32> {
     let mut c = vec![0.0f32; 4 * n];
     for i in 0..n {
-        let (_z, cmd) = gen(i);
+        let (_z, cmd) = r#gen(i);
         for j in 0..4 { c[j * n + i] = cmd[j]; }
     }
     c
@@ -151,9 +151,9 @@ impl Gpu {
     }
 
     // dispatch; returns (final state Vec<f32> length 18*n, compute elapsed seconds)
-    fn run<F: Fn(usize) -> (f32, [f32; 4])>(&self, p: &P, oh: f32, dt: f64, n: usize, n_sub: u32, gen: &F) -> (Vec<f32>, f64) {
-        let state = build_state(n, oh, gen);
-        let cmd = build_cmd(n, gen);
+    fn run<F: Fn(usize) -> (f32, [f32; 4])>(&self, p: &P, oh: f32, dt: f64, n: usize, n_sub: u32, r#gen: &F) -> (Vec<f32>, f64) {
+        let state = build_state(n, oh, r#gen);
+        let cmd = build_cmd(n, r#gen);
         let cfg = make_config(p, dt, n as u32, n_sub);
         let state_buf = self.device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
             label: Some("state"), contents: bytemuck::cast_slice(&state),
